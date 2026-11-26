@@ -7,7 +7,16 @@ public class GameManager : MonoBehaviour
     public GameObject parentOfTargets;
     public GameObject winSprite;
     public Text scoreText;
-    
+
+    public int winScore = 100;
+
+    public TargetType[] targetTypes =
+    {
+        new TargetType("Schneemann", 10, Color.white),
+        new TargetType("Geschenk", 20, new Color(1f, 0.35f, 0.35f)),
+        new TargetType("Eisblock", -10, new Color(0.45f, 0.8f, 1f))
+    };
+
     private int score = 0;
     private bool win = false;
 
@@ -18,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        //if the player hits 10 times, the player has won and the Spawn method will not called further. 
+        
         if(win)
         {
             CancelInvoke("Spawn");
@@ -31,9 +40,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //Spawn a target at a random position within a specified x and y range.
-    //Instantiate (make a concrete GameObject, i.e., a clone from the given prefeb target) the target as a child
-    //of the GameObject ParentTargets. In this case transform.localPosition instead of transform.position is important!!
     private void Spawn()
     {
         float randomX = Random.Range(-365f, 365f);
@@ -43,17 +49,20 @@ public class GameManager : MonoBehaviour
 
         GameObject newTarget = Instantiate(target, parentOfTargets.transform);
         newTarget.transform.localPosition = random2DPosition;
+
+        //choose one of the target types by chance and give the new target its points and color
+        TargetType type = targetTypes[Random.Range(0, targetTypes.Length)];
+        newTarget.GetComponent<Target>().Setup(type.points, type.color);
     }
 
-    //is called in the class Target
-    public void IncrementScore()
+    public void AddScore(int value)
     {
-        score++;
+        score += value;
         print(score);
 
         scoreText.text = score.ToString();
 
-        if (score >= 10)
+        if (score >= winScore)
         {
             win = true;
             winSprite.SetActive(true);
