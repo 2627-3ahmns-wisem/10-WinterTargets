@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     {
         scoreText.horizontalOverflow = HorizontalWrapMode.Overflow;
         scoreText.verticalOverflow = VerticalWrapMode.Overflow;
+        scoreText.alignment = TextAnchor.UpperCenter;
         StartRound();
     }
 
@@ -82,12 +83,12 @@ public class GameManager : MonoBehaviour
             winSprite.SetActive(true);
         }
 
-        scoreText.text = "Ende! Punkte: " + score + "   R = neue Runde";
+        scoreText.text = score + "\n<size=30>Ende</size>";
     }
 
     private void ShowScore()
     {
-        scoreText.text = "Punkte: " + score + "   Zeit: " + Mathf.CeilToInt(timeLeft);
+        scoreText.text = score + "\n<size=30>" + Mathf.CeilToInt(timeLeft) + " s</size>";
     }
 
     private void Spawn()
