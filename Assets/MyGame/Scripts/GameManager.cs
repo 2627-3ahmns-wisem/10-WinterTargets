@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
             CancelInvoke("Spawn");
         }
 
-        //every shoot (clicking left mouse button) produce a shooting sound.
         if (Input.GetMouseButtonDown(0))
         {
             gameObject.GetComponent<AudioSource>().Play();
@@ -50,8 +49,22 @@ public class GameManager : MonoBehaviour
         GameObject newTarget = Instantiate(target, parentOfTargets.transform);
         newTarget.transform.localPosition = random2DPosition;
 
-        //choose one of the target types by chance and give the new target its points and color
-        TargetType type = targetTypes[Random.Range(0, targetTypes.Length)];
+        int roll = Random.Range(0, 100);
+        TargetType type;
+
+        if (roll < 60)
+        {
+            type = targetTypes[0];
+        }
+        else if (roll < 90)
+        {
+            type = targetTypes[2];
+        }
+        else
+        {
+            type = targetTypes[1];
+        }
+
         newTarget.GetComponent<Target>().Setup(type.points, type.color);
     }
 
