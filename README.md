@@ -32,14 +32,6 @@ Zufallsposition: Spawn() wählt X zwischen -365 und 365 und Y zwischen -202 und 
 Punkteanzeige: IncrementScore() zählt score um 1 hoch und schreibt den Wert in das Textfeld scoreText.
 Siegbedingung: Ab score >= 10 wird win auf true gesetzt und das Bild winSprite eingeblendet. Update() beendet dann das Erzeugen mit CancelInvoke("Spawn").
 Selbstzerstörung: Jede Zielscheibe verschwindet nach 2 Sekunden von selbst, wenn sie nicht getroffen wird.
-##Abnahmefragen 
-Wie kommuniziert Target mit GameManager?
-
-In Start() sucht die Zielscheibe das Objekt „GameManager“ in der Szene und merkt sich dessen Skript mit GameObject.Find("GameManager").GetComponent<GameManager>(). Bei einem Klick ruft sie die öffentliche Methode gameManager.IncrementScore() auf.
-
-Was bewirkt Destroy(gameObject, 2f)?
-
-Die Zielscheibe wird nach 2 Sekunden automatisch gelöscht. Wer zu langsam ist, bekommt keinen Punkt.
 
 ##Meine Ideen
 Ich will einen Timer hinzufügen damit man auch verlieren kann. Nach dem Sieg soll ein Neustart-Knopf erscheinen. Mit steigendem Punktestand soll das Spiel schneller werden.

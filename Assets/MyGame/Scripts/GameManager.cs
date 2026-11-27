@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public GameObject winSprite;
     public Text scoreText;
 
+    public float roundTime = 60f;
     public int winScore = 100;
 
     public TargetType[] targetTypes =
@@ -18,31 +19,81 @@ public class GameManager : MonoBehaviour
     };
 
     private int score = 0;
-    private bool win = false;
+    private float timeLeft = 0f;
+    private bool gameRunning = false;
 
     private void Start()
     {
-        InvokeRepeating("Spawn",1f,1f);
+        scoreText.horizontalOverflow = HorizontalWrapMode.Overflow;
+        scoreText.verticalOverflow = VerticalWrapMode.Overflow;
+        StartRound();
     }
 
     private void Update()
     {
-        
-        if(win)
-        {
-            CancelInvoke("Spawn");
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
             gameObject.GetComponent<AudioSource>().Play();
         }
+
+        if (gameRunning)
+        {
+            timeLeft -= Time.deltaTime;
+
+            if (timeLeft <= 0f)
+            {
+                timeLeft = 0f;
+                EndRound();
+            }
+            else
+            {
+                ShowScore();
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartRound();
+        }
+    }
+
+    private void StartRound()
+    {
+        foreach (Target oldTarget in FindObjectsByType<Target>(FindObjectsSortMode.None))
+        {
+            Destroy(oldTarget.gameObject);
+        }
+
+        score = 0;
+        timeLeft = roundTime;
+        gameRunning = true;
+        winSprite.SetActive(false);
+        ShowScore();
+
+        InvokeRepeating("Spawn", 1f, 1f);
+    }
+
+    private void EndRound()
+    {
+        gameRunning = false;
+        CancelInvoke("Spawn");
+
+        if (score >= winScore)
+        {
+            winSprite.SetActive(true);
+        }
+
+        scoreText.text = "Ende! Punkte: " + score + "   R = neue Runde";
+    }
+
+    private void ShowScore()
+    {
+        scoreText.text = "Punkte: " + score + "   Zeit: " + Mathf.CeilToInt(timeLeft);
     }
 
     private void Spawn()
     {
         float randomX = Random.Range(-365f, 365f);
-        float randomY = Random.Range(-202f,202f);
+        float randomY = Random.Range(-202f, 202f);
 
         Vector2 random2DPosition = new Vector2(randomX, randomY);
 
@@ -70,15 +121,12 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int value)
     {
-        score += value;
-        print(score);
-
-        scoreText.text = score.ToString();
-
-        if (score >= winScore)
+        if (!gameRunning)
         {
-            win = true;
-            winSprite.SetActive(true);
+            return;
         }
+
+        score += value;
+        ShowScore();
     }
 }
